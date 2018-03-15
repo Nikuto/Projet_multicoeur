@@ -1,21 +1,37 @@
 package Reel;
-import Interface.*;
 
-public class TransactionReel implements Transaction {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-	@Override
+public class TransactionReel{
+	
+	private AtomicInteger BirthDate;
+	private Map<RegisterReel, Integer> lws = new HashMap<RegisterReel, Integer>();
+	private Map<RegisterReel, Integer> lrs = new HashMap<RegisterReel, Integer>();
+	
+	public AtomicInteger getBirthDate() {
+		return BirthDate;
+	}
+
+	public Map<RegisterReel, Integer> getLws() {
+		return lws;
+	}
+
+	public Map<RegisterReel, Integer> getLrs() {
+		return lrs;
+	}
+
 	public void begin() {
-		// TODO Auto-generated method stub
+		BirthDate = Windows.c.getTime();
 		
 	}
 
-	@Override
 	public void try_to_commit() throws AbortException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public boolean isCommited() {
 		// TODO Auto-generated method stub
 		return false;
