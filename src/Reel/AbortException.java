@@ -1,5 +1,6 @@
 package Reel;
 
+@SuppressWarnings("serial")
 public class AbortException extends Exception {
 	public AbortException() { super(); }
 	public AbortException(String message) { super(message); }

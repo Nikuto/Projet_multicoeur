@@ -1,17 +1,33 @@
 package Reel;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class RegisterReel{
+import Interface.Register;
+import Interface.Transaction;
+import javafx.util.Pair;
+
+@SuppressWarnings("serial")
+public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 	
-	private int value;
+	private V value;
 	private AtomicInteger date;
 	
-	public RegisterReel(int v, AtomicInteger a){
+	public void setValue(V value) {
+		this.value = value;
+	}
+
+	public void setDate(AtomicInteger date) {
+		this.date = date;
+	}
+
+	
+
+	public RegisterReel(V v, AtomicInteger a){
 		value = v;
 		date = a;
 	}
 
-	public int getValue() {
+	public V getValue() {
 		return value;
 	}
 
@@ -19,27 +35,41 @@ public class RegisterReel{
 		return date;
 	}
 	
-	public int read(TransactionReel t) throws AbortException {
-		if(t.getLrs().containsKey(this)) {
-			return (int) t.getLrs().get(this);
+	public V readReel(TransactionReel<V> t) throws AbortException {
+		if(t.getLcx().getDate() != null){
+			return t.getLcx().getValue();
 		}else {
-			RegisterReel lcx = new RegisterReel(value, date);
-			t.getLrs().put(lcx, lcx.value);
-			if(lcx.getDate().intValue() > t.getBirthDate().intValue()) {
+			t.getLcx().setValue(value);
+			t.getLcx().setDate(date);
+			t.getLrs().add(new Pair<RegisterReel<V>, V>(t.getLcx(), t.getLcx().value));
+			if(t.getLcx().date.intValue() > t.getBirthDate().intValue()) {
 				throw new AbortException("Abort mission");
 			}
 			else{
-				return lcx.getValue();
+				return t.getLcx().getValue();
 			}
 		}
 	}	
 
-	public void write(TransactionReel t, int v) throws AbortException {
-		if(!t.getLws().containsKey(this)) {
-			RegisterReel lcx = new RegisterReel(v, Windows.c.getTime()); 
+	public void writeReel(TransactionReel<V> t, V v) throws AbortException {
+		Pair<RegisterReel<V>, V> p = new Pair<RegisterReel<V>, V>(this,v);
+		if(!t.getLws().contains(p)) {
+			t.getLcx().setValue(v);
+			t.getLcx().setDate(Windows.c.getTime()); 
 		}
-		t.getLws().put(this, v);
+		t.getLws().add(p);
 		
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object read(Transaction t) throws AbortException {
+		return this.readReel((TransactionReel<V>) t);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void write(Transaction t, Object v) throws AbortException {
+		this.writeReel((TransactionReel<V>) t,(V) v);
+	}
 }
