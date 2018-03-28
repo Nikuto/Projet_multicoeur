@@ -14,8 +14,8 @@ public class Windows {
 		RegisterReel<Integer> r1 = new RegisterReel<Integer>(0,c.getTime());
 		
 		EcritureTest t0 = new EcritureTest(r1,"Thread 1",1);
-		EcritureTest t1 = new EcritureTest(r1,"Thread 2",1);
-		EcritureTest t2 = new EcritureTest(r1,"Thread 3",1);
+		EcritureTest t1 = new EcritureTest(r1,"Thread 2",2);
+		EcritureTest t2 = new EcritureTest(r1,"Thread 3",3);
 //		EcritureTest t3 = new EcritureTest(r1,"Thread 4",1);
 //		EcritureTest t4 = new EcritureTest(r1,"Thread 5",1);
 //		EcritureTest t5 = new EcritureTest(r1,"Thread 6",1);
