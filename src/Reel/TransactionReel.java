@@ -37,7 +37,7 @@ public class TransactionReel<Y> implements Transaction{
 
 	public void begin() {
 		BirthDate = Windows.c.getTime();
-		//System.out.println("Heure de creation : "+BirthDate.intValue());
+		System.out.println("Heure de creation : "+BirthDate.intValue());
 
 	}
 
@@ -51,12 +51,13 @@ public class TransactionReel<Y> implements Transaction{
 		try {		
 			
 			for(Pair<RegisterReel<Y>,Y> r : lrs) {
-				if(r.getKey().getDate().intValue() > this.getBirthDate().intValue()) {
+				//System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate.intValue());
+				if(r.getKey().getDate().intValue() > this.BirthDate.intValue()) {
 					for(int i = 0 ; i < lrs.size() ; i++) {
 						lrs.get(i).getKey().unlock();
 					}
 					for(int i = 0 ; i < lws.size() ; i++) {
-						lrs.get(i).getKey().unlock();
+						lws.get(i).getKey().unlock();
 					}
 					isCommited = false;
 					throw new AbortException("Abort mission"); 
@@ -73,7 +74,7 @@ public class TransactionReel<Y> implements Transaction{
 				w.getKey().setDate(commitDate);
 			}	
 			isCommited = true;
-			System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate.intValue());
+			//System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate.intValue());
 		}catch(Exception e) {
 			throw e;
 		}

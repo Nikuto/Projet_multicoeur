@@ -18,12 +18,12 @@ public class EcritureTest implements Runnable {
 		while(!t.isCommited()) {
 			t.begin();
 			try {
-				System.out.println("Valeur du registre avant write dans "+nom+" "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+				System.out.println("Valeur du registre avant write dans "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
 				registre.write(t,(Integer)registre.read(t) + i);
-				System.out.println("Valeur du registre après write "+nom+" "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+				System.out.println("Valeur du registre après write "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
 
 				t.try_to_commit();
-				System.out.println("Valeur du registre après commit "+nom+" "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+				System.out.println("Valeur du registre après commit "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
 
 
 			} catch (AbortException e) {
