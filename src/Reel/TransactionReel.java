@@ -40,7 +40,7 @@ public class TransactionReel<Y> implements Transaction{
 
 	}
 
-	public void try_to_commit() throws AbortException{
+	public synchronized  void try_to_commit() throws AbortException{
 		for(int i = 0 ; i < lws.size() ; i++) {
 			lws.get(i).getKey().lock();
 		}
@@ -64,7 +64,7 @@ public class TransactionReel<Y> implements Transaction{
 			
 			AtomicInteger commitDate = Windows.c.getAndIncrement();
 			
-			for(Pair<RegisterReel<Y>,Y> w : lrs) {
+			for(Pair<RegisterReel<Y>,Y> w : lws) {
 				//TODO POURQUOI C'EST EGAL A 1 AVANT ???
 				System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
 				w.getKey().setValue(lcx.getValue());

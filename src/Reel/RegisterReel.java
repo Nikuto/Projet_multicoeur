@@ -20,8 +20,6 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 		this.date = date;
 	}
 
-	
-
 	public RegisterReel(V v, AtomicInteger a){
 		value = v;
 		date = a;
