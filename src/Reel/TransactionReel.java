@@ -37,6 +37,7 @@ public class TransactionReel<Y> implements Transaction{
 
 	public void begin() {
 		BirthDate = Windows.c.getTime();
+		//System.out.println("Heure de creation : "+BirthDate.intValue());
 
 	}
 
@@ -66,12 +67,13 @@ public class TransactionReel<Y> implements Transaction{
 			
 			for(Pair<RegisterReel<Y>,Y> w : lws) {
 				//TODO POURQUOI C'EST EGAL A 1 AVANT ???
-				System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
+				//System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
 				w.getKey().setValue(lcx.getValue());
-				System.out.println("w.getKey().getValue() after : " + w.getKey().getValue());
+				//System.out.println("w.getKey().getValue() after : " + w.getKey().getValue());
 				w.getKey().setDate(commitDate);
 			}	
 			isCommited = true;
+			System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate.intValue());
 		}catch(Exception e) {
 			throw e;
 		}
