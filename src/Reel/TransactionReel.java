@@ -56,7 +56,7 @@ public class TransactionReel<Y> implements Transaction{
 		try {		
 			
 			for(Pair<RegisterReel<Y>,Y> r : lrs) {
-				System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate);
+				//System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate);
 				if(r.getKey().getDate().intValue() > this.BirthDate) {
 					for(int i = 0 ; i < lrs.size() ; i++) {
 						lrs.get(i).getKey().unlock();
@@ -72,13 +72,12 @@ public class TransactionReel<Y> implements Transaction{
 			}
 			AtomicInteger commitDate = Windows.c.getAndIncrement();
 			for(Pair<RegisterReel<Y>,Y> w : lws) {
-				//TODO POURQUOI C'EST EGAL A 1 AVANT ???
-				System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
+//				System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
 				w.getKey().setValue(lcx.getValue());
 				w.getKey().setDate(commitDate);
 			}	
 			isCommited = true;
-			System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate);
+			//System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate);
 		}catch(Exception e) {
 			lcx.setDate(null);
 			lcx.setValue(null);

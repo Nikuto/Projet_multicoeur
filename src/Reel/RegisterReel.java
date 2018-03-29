@@ -41,7 +41,7 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 				t.getLcx().setValue(value);
 				
 				t.getLrs().add(new Pair<RegisterReel<V>, V>(t.getLcx(), t.getLcx().value));
-				System.out.println(t.getLcx().date.intValue() + ">" + t.getBirthDate());
+				//System.out.println(t.getLcx().date.intValue() + ">" + t.getBirthDate());
 				if(t.getLcx().date.intValue() > t.getBirthDate()) {
 					throw new AbortException("Abort mission");
 				}
