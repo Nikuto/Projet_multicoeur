@@ -37,17 +37,17 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 		if(t.getLcx().getDate() != null){
 			return t.getLcx().getValue();
 		}else {
-			
-			t.getLcx().setDate(Windows.c.getTime());
-			t.getLcx().setValue(value);
-			
-			t.getLrs().add(new Pair<RegisterReel<V>, V>(t.getLcx(), t.getLcx().value));
-			if(t.getLcx().date.intValue() > t.getBirthDate()) {
-				throw new AbortException("Abort mission");
-			}
-			else{
-				return t.getLcx().getValue();
-			}
+				t.getLcx().setDate(Windows.c.getTime());
+				t.getLcx().setValue(value);
+				
+				t.getLrs().add(new Pair<RegisterReel<V>, V>(t.getLcx(), t.getLcx().value));
+				System.out.println(t.getLcx().date.intValue() + ">" + t.getBirthDate());
+				if(t.getLcx().date.intValue() > t.getBirthDate()) {
+					throw new AbortException("Abort mission");
+				}
+				else{
+					return t.getLcx().getValue();
+				}
 		}
 	}	
 

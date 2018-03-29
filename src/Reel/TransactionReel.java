@@ -37,8 +37,7 @@ public class TransactionReel<Y> implements Transaction{
 
 	public void begin() {
 		BirthDate = Windows.c.getTime().intValue();
-		System.out.println("Heure de creation : "+BirthDate);
-
+		
 	}
 
 	public synchronized  void try_to_commit() throws AbortException{
@@ -57,7 +56,7 @@ public class TransactionReel<Y> implements Transaction{
 		try {		
 			
 			for(Pair<RegisterReel<Y>,Y> r : lrs) {
-				//System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate.intValue());
+				System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate);
 				if(r.getKey().getDate().intValue() > this.BirthDate) {
 					for(int i = 0 ; i < lrs.size() ; i++) {
 						lrs.get(i).getKey().unlock();
@@ -66,22 +65,23 @@ public class TransactionReel<Y> implements Transaction{
 						lws.get(i).getKey().unlock();
 					}
 					isCommited = false;
+					lcx.setDate(null);
+					lcx.setValue(null);
 					throw new AbortException("Abort mission"); 
 				}				
 			}
-			
 			AtomicInteger commitDate = Windows.c.getAndIncrement();
-			
 			for(Pair<RegisterReel<Y>,Y> w : lws) {
 				//TODO POURQUOI C'EST EGAL A 1 AVANT ???
-				//System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
+				System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
 				w.getKey().setValue(lcx.getValue());
-				//System.out.println("w.getKey().getValue() after : " + w.getKey().getValue());
 				w.getKey().setDate(commitDate);
 			}	
 			isCommited = true;
-			//System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate);
+			System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate);
 		}catch(Exception e) {
+			lcx.setDate(null);
+			lcx.setValue(null);
 			throw e;
 		}
 		finally{
