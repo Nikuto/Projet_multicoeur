@@ -36,8 +36,7 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 	public V readReel(TransactionReel<V> t) throws AbortException {
 		if(t.getLcx().getDate() != null){
 			return t.getLcx().getValue();
-		}else {
-			
+		}else {			
 			t.getLcx().setDate(Windows.c.getTime());
 			t.getLcx().setValue(value);
 			
@@ -57,8 +56,7 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 			t.getLcx().setDate(Windows.c.getTime());
 			t.getLcx().setValue(v);
 		}
-		t.getLws().add(p);
-		
+		t.getLws().add(p);		
 	}
 
 	@SuppressWarnings("unchecked")

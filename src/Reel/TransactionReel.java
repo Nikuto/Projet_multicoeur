@@ -37,8 +37,7 @@ public class TransactionReel<Y> implements Transaction{
 
 	public void begin() {
 		BirthDate = Windows.c.getTime().intValue();
-		System.out.println("Heure de creation : "+BirthDate);
-
+		System.out.println("Heure de creation de la transaction de " + Thread.currentThread().getName() + " : " + BirthDate);
 	}
 
 	public synchronized  void try_to_commit() throws AbortException{
@@ -54,8 +53,7 @@ public class TransactionReel<Y> implements Transaction{
 			lrs.get(i).getKey().lock();
 			free.add(lrs.get(i).getKey());
 		}
-		try {		
-			
+		try {					
 			for(Pair<RegisterReel<Y>,Y> r : lrs) {
 				//System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate.intValue());
 				if(r.getKey().getDate().intValue() > this.BirthDate) {
@@ -73,7 +71,6 @@ public class TransactionReel<Y> implements Transaction{
 			AtomicInteger commitDate = Windows.c.getAndIncrement();
 			
 			for(Pair<RegisterReel<Y>,Y> w : lws) {
-				//TODO POURQUOI C'EST EGAL A 1 AVANT ???
 				//System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
 				w.getKey().setValue(lcx.getValue());
 				//System.out.println("w.getKey().getValue() after : " + w.getKey().getValue());
@@ -96,14 +93,12 @@ public class TransactionReel<Y> implements Transaction{
 //					lrs.get(i).getKey().unlock();
 //				}
 			}catch(IllegalMonitorStateException e) {
-				System.out.println("On essaie d'unlock un verrou pas a soi");
+				System.out.println("On essaie d'unlock un verrou pas a soi pour " + Thread.currentThread().getName());
 			}
 		}
-
 	}
 
 	public boolean isCommited() {
 		return isCommited;
 	}
-
 }

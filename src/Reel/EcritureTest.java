@@ -3,7 +3,6 @@ package Reel;
 import Interface.Transaction;
 
 public class EcritureTest implements Runnable {
-
 	RegisterReel<Integer> registre;
 	String nom;
 	Integer i;
@@ -22,19 +21,15 @@ public class EcritureTest implements Runnable {
 				try {
 					//System.out.println("Valeur du registre avant write dans "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
 					registre.write(t,(Integer)registre.read(t) + i);
-					//System.out.println("Valeur du registre aprÃ¨s write "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+					//System.out.println("Valeur du registre après write "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
 	
 					t.try_to_commit();
-					System.out.println("Valeur du registre aprÃ¨s commit "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
-	
-	
+					System.out.println("Valeur du registre après commit de "+nom+": "+(Integer)registre.getValue()+", time clock : "+Windows.c.getTime().intValue());		
 				} catch (AbortException e) {
 					//e.printStackTrace();
 					System.out.println("ABORT");
-				}
-				
+				}			
 			}
 		}	
 	}
-
 }
