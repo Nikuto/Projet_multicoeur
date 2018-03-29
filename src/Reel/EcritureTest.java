@@ -3,27 +3,38 @@ package Reel;
 import Interface.Transaction;
 
 public class EcritureTest implements Runnable {
+
+	RegisterReel<Integer> registre;
+	String nom;
+	Integer i;
 	
-	RegisterReel<Integer> x;
-	
-	public EcritureTest(RegisterReel<Integer> o){
-		x = o;
+	public EcritureTest(RegisterReel<Integer> r,String n,int nb) {
+		registre = r;
+		nom = n;
+		i = nb;
 	}
-	
-	@Override
+
 	public void run() {
-		
 		Transaction t = new TransactionReel<Integer>();
-		while(!t.isCommited()) {
-			try {
+		synchronized(this) {
+			while(!t.isCommited()) {
 				t.begin();
-				x.write(t, (int) x.read(t) + 1);
-				t.try_to_commit();
+				try {
+					//System.out.println("Valeur du registre avant write dans "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+					registre.write(t,(Integer)registre.read(t) + i);
+					//System.out.println("Valeur du registre après write "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+	
+					t.try_to_commit();
+					System.out.println("Valeur du registre après commit "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+	
+	
+				} catch (AbortException e) {
+					//e.printStackTrace();
+					System.out.println("ABORT");
+				}
 				
-			}catch(AbortException e) {}
-			
-		}
-		System.out.println("Valeur du registre du thread " + Thread.currentThread().getId() + " : " + x.getValue());
+			}
+		}	
 	}
 
 }

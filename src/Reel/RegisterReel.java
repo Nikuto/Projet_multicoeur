@@ -20,8 +20,6 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 		this.date = date;
 	}
 
-	
-
 	public RegisterReel(V v, AtomicInteger a){
 		value = v;
 		date = a;
@@ -39,10 +37,12 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 		if(t.getLcx().getDate() != null){
 			return t.getLcx().getValue();
 		}else {
+			
+			t.getLcx().setDate(Windows.c.getTime());
 			t.getLcx().setValue(value);
-			t.getLcx().setDate(date);
+			
 			t.getLrs().add(new Pair<RegisterReel<V>, V>(t.getLcx(), t.getLcx().value));
-			if(t.getLcx().date.intValue() > t.getBirthDate().intValue()) {
+			if(t.getLcx().date.intValue() > t.getBirthDate()) {
 				throw new AbortException("Abort mission");
 			}
 			else{
@@ -54,8 +54,8 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 	public void writeReel(TransactionReel<V> t, V v) throws AbortException {
 		Pair<RegisterReel<V>, V> p = new Pair<RegisterReel<V>, V>(this,v);
 		if(!t.getLws().contains(p)) {
+			t.getLcx().setDate(Windows.c.getTime());
 			t.getLcx().setValue(v);
-			t.getLcx().setDate(Windows.c.getTime()); 
 		}
 		t.getLws().add(p);
 		

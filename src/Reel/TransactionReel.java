@@ -9,7 +9,7 @@ import javafx.util.Pair;
 
 public class TransactionReel<Y> implements Transaction{
 
-	private AtomicInteger BirthDate;
+	private int BirthDate;
 	private List<Pair<RegisterReel<Y>,Y>> lws = new ArrayList<Pair<RegisterReel<Y>,Y>>();
 	private List<Pair<RegisterReel<Y>,Y>> lrs = new ArrayList<Pair<RegisterReel<Y>,Y>>();
 	private Boolean isCommited = false;
@@ -23,7 +23,7 @@ public class TransactionReel<Y> implements Transaction{
 		return lcx;
 	}
 	
-	public AtomicInteger getBirthDate() {
+	public int getBirthDate() {
 		return BirthDate;
 	}
 
@@ -36,26 +36,34 @@ public class TransactionReel<Y> implements Transaction{
 	}
 
 	public void begin() {
-		BirthDate = Windows.c.getTime();
+		BirthDate = Windows.c.getTime().intValue();
+		System.out.println("Heure de creation : "+BirthDate);
 
 	}
 
-	public void try_to_commit() throws AbortException{
-		for(int i = 0 ; i < lws.size() ; i++) {
+	public synchronized  void try_to_commit() throws AbortException{
+		int taille_lws=lws.size();
+		int taille_lrs=lrs.size();
+		List< RegisterReel<Y> > free = new ArrayList<RegisterReel<Y>>();
+		
+		for(int i = 0 ; i < taille_lws ; i++) {
 			lws.get(i).getKey().lock();
+			free.add(lws.get(i).getKey());
 		}
-		for(int i = 0 ; i < lrs.size() ; i++) {
+		for(int i = 0 ; i < taille_lrs ; i++) {
 			lrs.get(i).getKey().lock();
+			free.add(lrs.get(i).getKey());
 		}
 		try {		
 			
 			for(Pair<RegisterReel<Y>,Y> r : lrs) {
-				if(r.getKey().getDate().intValue() > this.getBirthDate().intValue()) {
+				//System.out.println(r.getKey().getDate().intValue() + " > ?" + this.BirthDate.intValue());
+				if(r.getKey().getDate().intValue() > this.BirthDate) {
 					for(int i = 0 ; i < lrs.size() ; i++) {
 						lrs.get(i).getKey().unlock();
 					}
 					for(int i = 0 ; i < lws.size() ; i++) {
-						lrs.get(i).getKey().unlock();
+						lws.get(i).getKey().unlock();
 					}
 					isCommited = false;
 					throw new AbortException("Abort mission"); 
@@ -64,23 +72,31 @@ public class TransactionReel<Y> implements Transaction{
 			
 			AtomicInteger commitDate = Windows.c.getAndIncrement();
 			
-			for(Pair<RegisterReel<Y>,Y> w : lrs) {
+			for(Pair<RegisterReel<Y>,Y> w : lws) {
 				//TODO POURQUOI C'EST EGAL A 1 AVANT ???
-				System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
+				//System.out.println("w.getKey().getValue() before : " + w.getKey().getValue());
 				w.getKey().setValue(lcx.getValue());
-				System.out.println("w.getKey().getValue() after : " + w.getKey().getValue());
+				//System.out.println("w.getKey().getValue() after : " + w.getKey().getValue());
 				w.getKey().setDate(commitDate);
 			}	
 			isCommited = true;
+			//System.out.println("Time clock au moment du commit : "+Windows.c.getTime().intValue() + " Et sa birthdate : "+BirthDate);
 		}catch(Exception e) {
 			throw e;
 		}
 		finally{
-			for(int i = 0 ; i < lws.size() ; i++) {
-				lws.get(i).getKey().unlock();
-			}
-			for(int i = 0 ; i < lrs.size() ; i++) {
-				lrs.get(i).getKey().unlock();
+			try {
+				for(RegisterReel<Y> x : free) {
+					x.unlock();
+				}
+//				for(int i = 0 ; i < taille_lws ; i++) {
+//					lws.get(i).getKey().unlock();
+//				}
+//				for(int i = 0 ; i < taille_lrs ; i++) {
+//					lrs.get(i).getKey().unlock();
+//				}
+			}catch(IllegalMonitorStateException e) {
+				System.out.println("On essaie d'unlock un verrou pas a soi");
 			}
 		}
 
