@@ -8,10 +8,10 @@ import javafx.util.Pair;
 
 @SuppressWarnings("serial")
 public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
-	
+
 	private V value;
 	private AtomicInteger date;
-	
+
 	public void setValue(V value) {
 		this.value = value;
 	}
@@ -32,15 +32,17 @@ public class RegisterReel<V> extends ReentrantLock implements Register<Object>{
 	public AtomicInteger getDate() {
 		return date;
 	}
-	
+
 	public V readReel(TransactionReel<V> t) throws AbortException {
 		if(t.getLcx().getDate() != null){
 			return t.getLcx().getValue();
-		}else {			
+
+		}else {
 			t.getLcx().setDate(Windows.c.getTime());
 			t.getLcx().setValue(value);
-			
+
 			t.getLrs().add(new Pair<RegisterReel<V>, V>(t.getLcx(), t.getLcx().value));
+			//System.out.println(t.getLcx().date.intValue() + ">" + t.getBirthDate());
 			if(t.getLcx().date.intValue() > t.getBirthDate()) {
 				throw new AbortException("Abort mission");
 			}

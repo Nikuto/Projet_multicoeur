@@ -15,21 +15,22 @@ public class EcritureTest implements Runnable {
 
 	public void run() {
 		Transaction t = new TransactionReel<Integer>();
-		synchronized(this) {
 			while(!t.isCommited()) {
 				t.begin();
+				//System.out.println("Heure de creation de "+nom+ ": "+ t.getBirthDate() );
 				try {
-					//System.out.println("Valeur du registre avant write dans "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
-					registre.write(t,(Integer)registre.read(t) + i);
-					//System.out.println("Valeur du registre après write "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
-	
+					int x = (Integer)registre.read(t) + i;
+					System.out.println("Valeur du registre avant write dans "+nom+": "+(Integer)registre.getValue()+" time clock : "+Windows.c.getTime().intValue());
+					registre.write(t,x);
+					System.out.println("Valeur du registre après write "+nom+": "+x+" time clock : "+Windows.c.getTime().intValue());
+
 					t.try_to_commit();
 					System.out.println("Valeur du registre après commit de "+nom+": "+(Integer)registre.getValue()+", time clock : "+Windows.c.getTime().intValue());		
 				} catch (AbortException e) {
 					//e.printStackTrace();
-					System.out.println("ABORT");
-				}			
-			}
+
+					System.out.println("ABORT ON " + nom);
+				}				
 		}	
 	}
 }

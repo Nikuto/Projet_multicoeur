@@ -6,10 +6,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Windows {
 	public static Clock c = new Clock(); 
+	public static RegisterReel<Integer> r1 = new RegisterReel<Integer>(0,c.getTime());
 
 	public static void main(String [] args) throws InterruptedException{		
-		List<EcritureTest> l = new ArrayList<EcritureTest>();		
-		RegisterReel<Integer> r1 = new RegisterReel<Integer>(0,c.getTime());
+		List<EcritureTest> l = new ArrayList<EcritureTest>();
 		
 		EcritureTest t0 = new EcritureTest(r1,"Thread 0",1);
 		EcritureTest t1 = new EcritureTest(r1,"Thread 1",1);
@@ -25,14 +25,14 @@ public class Windows {
 		l.add(t0);
 		l.add(t1);
 		l.add(t2);
-		l.add(t3);
-		l.add(t4);
-		l.add(t5);
-		l.add(t6);
-		l.add(t7);
-		l.add(t8);
-		l.add(t9);
-				
+//		l.add(t3);
+//		l.add(t4);
+//		l.add(t5);
+//		l.add(t6);
+//		l.add(t7);
+//		l.add(t8);
+//		l.add(t9);
+		
 		int test = 2;
 
 		if(test==1) {
